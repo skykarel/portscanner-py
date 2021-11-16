@@ -10,20 +10,27 @@ def getOpenPorts(target, portRange):
     IPadrr = socket.gethostbyname(target)
     print("-"*30 + " scanning " + "-"*30)
     print("target ip adress: " + IPadrr)
-    print(socket.getfqdn(target)) #full qualified domain name
+    print("fqdn: "+socket.getfqdn(target)) #full qualified domain name
+    
+    
+    print("\nscanning... ")
+    #hacer un loop sobre el rango de puertos
     try:
-        for port in range(53,90):
-            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            socket.setdefaulttimeout(00)
-
-            # returns an error indicator
-            result = s.connect_ex((target,port))
-            if result ==0:
-                print("Port {} is open".format(port))
-            s.close()
-
+        for port in portRange:
+    
+            #abrir el socket determinado
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            socket.setdefaulttimeout(1)
+            
+            #verificar si se conecta
+            result = sock.connect_ex((IPadrr, port))
+    
+            #si se conecta agregarlo al array
+            if result == 0:
+                openPorts.append(port)
+            sock.close()
     except KeyboardInterrupt:
-        print " You pressed Ctrl+C"
+        print(" You pressed Ctrl+C")
         sys.exit()
 
     except socket.gaierror:
@@ -34,23 +41,5 @@ def getOpenPorts(target, portRange):
         print("Couldn't connect to server")
         sys.exit()
 
-    """
-    #hacer un loop sobre el rango de puertos
-    for port in range(1,30):
-        print("scanning... ")
-
-        #abrir el socket determinado
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-        #verificar si se conecta
-        result = sock.connect_ex((IPadrr, port))
-
-        #si se conecta agregarlo al array
-        if result == 0:
-            openPorts.append(port)
-        sock.close()
-
-
     return openPorts
 
-    """
